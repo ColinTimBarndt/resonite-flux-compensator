@@ -90,7 +90,7 @@ If[[If]];
 Write0 f2@==> If;
 LessThan -->|condition| If;
 
-If f3@==>|onTrue| Inc[[Increment X]]
+If f3@==>|onTrue| Inc[[Increment N]]
 If f4@==>|onFalse| End{{End}}
 
 Inc f5@==> If
