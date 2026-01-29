@@ -45,11 +45,6 @@ public delegate void Call();
 
 public delegate T Expression<T>();
 
-public sealed class Continuation : CompilerHint
-{
-    private Continuation() : base() { }
-}
-
 public sealed class Variable<T> : CompilerHint
 {
     private Variable() : base() { }

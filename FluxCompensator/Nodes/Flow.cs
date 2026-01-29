@@ -4,6 +4,19 @@ public static class Flow
 {
     private const int LOOP_CHECK_MASK = 1023;
 
+    [Action(implicitNext: false)]
+    public static void If(
+        [Input] bool condition,
+        Call onTrue,
+        Call onFalse
+    )
+    {
+        if (condition)
+            onTrue();
+        else
+            onFalse();
+    }
+
     [Action]
     public static void For(
         [Context] CancellationToken token,

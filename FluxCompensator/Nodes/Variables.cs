@@ -30,25 +30,31 @@ public static class Variables
     }
 
     [Action]
-    public static Continuation Write<T>(
+    public static void Write<T>(
         [Input] T value,
         [InputRef] Variable<T> variable,
-        Continuation onSuccess,
-        Continuation onError
+        Call onSuccess,
+        Call onError
     )
     {
-        return variable.Write(value) ? onSuccess : onError;
+        if (variable.Write(value))
+            onSuccess();
+        else
+            onError();
     }
 
     [Action]
-    public static Continuation IndirectWrite<T>(
+    public static void IndirectWrite<T>(
         [Input] T value,
         [Input] Variable<T> variable,
-        Continuation onSuccess,
-        Continuation onError
+        Call onSuccess,
+        Call onError
     )
     {
-        return variable.Write(value) ? onSuccess : onError;
+        if (variable.Write(value))
+            onSuccess();
+        else
+            onError();
     }
 
     [Action]
@@ -61,27 +67,33 @@ public static class Variables
     }
 
     [Action]
-    public static Continuation Increment<T>(
+    public static void Increment<T>(
         [InputRef] Variable<T> variable,
-        Continuation onSuccess,
-        Continuation onError
+        Call onSuccess,
+        Call onError
     ) where T : INumber<T>
     {
         var next = variable.Read() ?? T.AdditiveIdentity;
         next++;
-        return variable.Write(next) ? onSuccess : onError;
+        if (variable.Write(next))
+            onSuccess();
+        else
+            onError();
     }
 
     [Action]
-    public static Continuation IndirectIncrement<T>(
+    public static void IndirectIncrement<T>(
         [Input] Variable<T> variable,
-        Continuation onSuccess,
-        Continuation onError
+        Call onSuccess,
+        Call onError
     ) where T : INumber<T>
     {
         var next = variable.Read() ?? T.AdditiveIdentity;
         next++;
-        return variable.Write(next) ? onSuccess : onError;
+        if (variable.Write(next))
+            onSuccess();
+        else
+            onError();
     }
 
     [Action]
@@ -94,26 +106,32 @@ public static class Variables
     }
 
     [Action]
-    public static Continuation Decrement<T>(
+    public static void Decrement<T>(
         [InputRef] Variable<T> variable,
-        Continuation onSuccess,
-        Continuation onError
+        Call onSuccess,
+        Call onError
     ) where T : INumber<T>
     {
         var next = variable.Read() ?? T.AdditiveIdentity;
         next--;
-        return variable.Write(next) ? onSuccess : onError;
+        if (variable.Write(next))
+            onSuccess();
+        else
+            onError();
     }
 
     [Action]
-    public static Continuation IndirectDecrement<T>(
+    public static void IndirectDecrement<T>(
         [Input] Variable<T> variable,
-        Continuation onSuccess,
-        Continuation onError
+        Call onSuccess,
+        Call onError
     ) where T : INumber<T>
     {
         var next = variable.Read() ?? T.AdditiveIdentity;
         next--;
-        return variable.Write(next) ? onSuccess : onError;
+        if (variable.Write(next))
+            onSuccess();
+        else
+            onError();
     }
 }
