@@ -1,6 +1,6 @@
 # Node Model
 
-This document is defines how a FluxCompensator node is modeled such
+This document defines how a FluxCompensator node is modeled such
 that it can be read by the compiler.
 
 ## Examples
