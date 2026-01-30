@@ -2,6 +2,29 @@
 
 The high level intermediate representation is used as an intermediate step between reading the IL of node implementations and writing the compiled/transpiled resulting IL.
 
+The HIR of an impulse flow is a [finite-state machine]:
+
+- $\Sigma$ is the input alphabet, which consists of all tail calls;
+- $\sigma\in\Sigma$ is a tail call;
+- $S$ is the finite non-empty set of states;
+- $s_0 \in S$ is the initial state;
+- $\delta:S\times\Sigma\to S$ is the state-transition function;
+- $\tau\subset S\times\Sigma$ is the set of all yielding/async transitions;
+
+$$
+\begin{align}
+S_n \overset\sigma\to S_k &\iff \delta(S_n, \sigma) = S_k
+\\
+S_n \overset\sigma\leadsto S_k &\iff S_n \overset\sigma\to S_k~\land~(S_n,\sigma) \in \tau
+\\
+S_n \overset\sigma\rightarrowtail S_k &\iff S_n \overset\sigma\to S_k~\land~(S_n,\sigma) \notin \tau
+\end{align}
+$$
+
+To put it in words: $A\rightarrowtail B$ is a synchronous transition while $A\leadsto B$ is a yielding transition. Calls which are not tail calls do not call as transitions.
+
+[finite-state machine]: https://en.wikipedia.org/wiki/Finite-state_machine
+
 ## Basic Example
 
 ```mermaid
@@ -29,45 +52,14 @@ f3@{animate: true};
 f4@{animate: true};
 ```
 
-```cs
-local int X = 0;
-state start {
-  next b_write;
-}
-state b_write {
-  int value;
-  // Eval inputs
-  call b_const(&value);
-  // Write (value, &X);
-  X = value;
-  next b_if;
-}
-b_const(int ref value) {
-  value = 1;
-}
-state b_if {
-  bool condition;
-  // Eval inputs
-  call b_eq(&condition);
-  // If(condition, b_onTrue, b_onFalse)
-  if (condition)
-    next b_action_a;
-  else
-    next b_action_b;
-}
-b_eq(bool ref result) {
-  int a, b;
-  // Eval inputs
-  call b_read(&a);
-  call b_const(&b);
-  // Eq(a, b, &result)
-  result = a == b;
-}
-b_read(int ref value) {
-  value = X;
-}
-state b_action_a { ... }
-state b_action_b { ... }
+### Intermediate Representation
+
+```mermaid
+graph LR;
+
+S{{Start}} ==> Write[[Write X]] ==> If[[If]]
+If ==> A[[Action A]] ==> E{{End}}
+If ==> B[[Action B]] ==> E
 ```
 
 ## Recursion
@@ -91,15 +83,47 @@ Write0 f2@==> If;
 LessThan -->|condition| If;
 
 If f3@==>|onTrue| Inc[[Increment N]]
-If f4@==>|onFalse| End{{End}}
 
-Inc f5@==> If
+Inc f4@==> If
 
 f1@{animate: true};
 f2@{animate: true};
 f3@{animate: true};
 f4@{animate: true};
-f5@{animate: true};
 ```
 
-TODO
+### Intermediate Representation
+
+```mermaid
+graph LR;
+
+S{{Start}} ==> Write[[Write N]] ==> If[[If]]
+If ==> Inc[[Increment N]] ==> If
+If ==> E{{End}}
+```
+
+## Non-Tail Calls
+
+```mermaid
+graph LR;
+
+S{{Start}} f1@==> For[[For]] f2@==>|Next| B[[Action B]] f3@==> A[[Action A]]
+Const([Constant 10]) --> For
+For f4@==>|Step| A
+
+f1@{animate: true}
+f2@{animate: true}
+f3@{animate: true}
+f4@{animate: true}
+```
+
+### Intermediate Representation
+
+```mermaid
+graph LR;
+
+S{{Start}} ==> For[[For]] ==> B[[Action B]] ==> A[[Action A]] ==> E{{End}}
+
+For -.-> A
+
+```
