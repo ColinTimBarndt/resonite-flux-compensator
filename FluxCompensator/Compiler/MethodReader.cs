@@ -123,7 +123,7 @@ public static class MethodReader
         }
     }
 
-    private ref struct InstructionIterator(byte[] data, MetadataReader metadata) : IEnumerator<Instruction>
+    private ref struct InstructionIterator(ReadOnlySpan<byte> data, MetadataReader metadata) : IEnumerator<Instruction>
     {
         private int _index = 0;
         private readonly ReadOnlySpan<byte> _data = data;
@@ -144,7 +144,8 @@ public static class MethodReader
             {
                 if (_index >= _data.Length)
                     throw new InvalidDataException();
-                code |= _data[_index++] << 8;
+                code <<= 8;
+                code |= _data[_index++];
             }
             if (!OpCodeTable.TryGetValue((short)code, out var op))
                 throw new InvalidDataException();
