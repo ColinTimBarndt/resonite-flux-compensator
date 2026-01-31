@@ -11,6 +11,7 @@ public static class MethodReader
 {
     private static readonly Dictionary<short, OpCode> OpCodeTable = [];
     private static readonly byte[] OperandTypeSizes;
+    private static readonly Dictionary<Assembly, MetadataReader> MetadataTable = [];
 
     static MethodReader()
     {
@@ -63,9 +64,13 @@ public static class MethodReader
 
     private static unsafe MetadataReader? GetMetadataReader(Assembly asm)
     {
+        if (MetadataTable.TryGetValue(asm, out var cached))
+            return cached;
         if (!asm.TryGetRawMetadata(out byte* blob, out int length))
             return null;
-        return new MetadataReader(blob, length);
+        var reader = new MetadataReader(blob, length);
+        MetadataTable.Add(asm, reader);
+        return reader;
     }
 
     private readonly struct Instruction(OpCode op, object? imm)
@@ -112,11 +117,6 @@ public static class MethodReader
                 {
                     return $"{code} \"{metadata.GetString((StringHandle)name)}\"";
                 }
-            }
-
-            if (metadata != null)
-            {
-
             }
 
             return $"{code} {immediate}";
