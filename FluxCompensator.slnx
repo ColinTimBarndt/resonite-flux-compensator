@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="FluxCompensator/FluxCompensator.csproj" />
+  <Project Path="Experiment/Experiment.csproj" />
 </Solution>
