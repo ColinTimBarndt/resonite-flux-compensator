@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProtoFiber.Core\ProtoFiber.Core.csproj" />
+  </ItemGroup>
+
+</Project>

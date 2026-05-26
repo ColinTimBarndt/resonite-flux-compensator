@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ProtoFiber.Core.Nodes/ProtoFiber.Core.Nodes.csproj" />
+  <Project Path="ProtoFiber.Core/ProtoFiber.Core.csproj" />
+  <Project Path="ProtoFiber.DotNet/ProtoFiber.DotNet.csproj" />
+</Solution>
