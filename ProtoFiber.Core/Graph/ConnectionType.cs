@@ -1,6 +1,6 @@
 namespace ProtoFiber.Core.Graph;
 
-public enum ConnectionType
+public enum ConnectionType : byte
 {
     Invalid = 0,
     Data,

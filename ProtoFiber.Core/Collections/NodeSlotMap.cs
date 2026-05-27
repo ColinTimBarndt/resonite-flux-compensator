@@ -54,7 +54,7 @@ internal struct NodeSlotMap() : IEnumerable<Node>
         }
     }
 
-    public void Remove(NodeId id)
+    public void RemoveAt(NodeId id)
     {
         ref var value = ref this[id];
         if (value.Type == NodeTypeId.Invalid)
