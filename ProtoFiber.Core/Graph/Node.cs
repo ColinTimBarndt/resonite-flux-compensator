@@ -39,4 +39,15 @@ public struct Node
     [FieldOffset(7)]
     internal byte _outputs;
 
+    // No need to check for invalid since non-default
+    // vacan entries are never publicly exposed
+
+    public readonly int OperationCount => _operations;
+
+    public readonly int ImpulseCount => _impulses;
+
+    public readonly int InputCount => _inputs;
+
+    public readonly int OutputCount => _outputs;
+
 }

@@ -3,7 +3,7 @@ using ProtoFiber.Core.Graph;
 
 namespace ProtoFiber.Core.Collections;
 
-internal struct NodeSlotMap() : IEnumerable<Node>
+internal struct NodeSlotMap() : IEnumerable<KeyValuePair<NodeId, Node>>
 {
 
     private Node[] _items = [];
@@ -54,26 +54,28 @@ internal struct NodeSlotMap() : IEnumerable<Node>
         }
     }
 
-    public void RemoveAt(NodeId id)
+    public Node? RemoveAt(NodeId id)
     {
         ref var value = ref this[id];
         if (value.Type == NodeTypeId.Invalid)
-            return;
+            return null;
+        var copy = value;
 
         Count--;
 
         // Push next free entry
         value = new(_next);
         _next = (int)id;
+        return copy;
     }
 
     public readonly Enumerator GetEnumerator() => new(_items);
 
-    readonly IEnumerator<Node> IEnumerable<Node>.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator<KeyValuePair<NodeId, Node>> IEnumerable<KeyValuePair<NodeId, Node>>.GetEnumerator() => GetEnumerator();
 
     readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public struct Enumerator : IEnumerator<Node>
+    public struct Enumerator : IEnumerator<KeyValuePair<NodeId, Node>>
     {
 
         internal Enumerator(Node[] items)
@@ -85,7 +87,7 @@ internal struct NodeSlotMap() : IEnumerable<Node>
 
         private int _index;
 
-        public Node Current { get; private set; }
+        public KeyValuePair<NodeId, Node> Current { get; private set; }
 
         readonly object IEnumerator.Current => Current;
 
@@ -95,11 +97,12 @@ internal struct NodeSlotMap() : IEnumerable<Node>
         {
             while (_index < _items.Length)
             {
-                ref var item = ref _items[_index++];
+                var itemIndex = _index++;
+                ref var item = ref _items[itemIndex];
                 if (item.Type == NodeTypeId.Invalid)
                     continue;
 
-                Current = item;
+                Current = new(new((uint)itemIndex), item);
                 return true;
             }
             return false;

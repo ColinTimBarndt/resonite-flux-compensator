@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ProtoFiber.Core.Collections;
@@ -6,10 +7,10 @@ namespace ProtoFiber.Core.Graph;
 
 using NodeConnectionSet = InlineCollection<NodeConnection>;
 
-public sealed class Graph
+public sealed class Graph : IEnumerable<KeyValuePair<NodeId, Node>>
 {
 
-    private NodeSlotMap _nodes = new();
+    private NodeSlotMap _nodes = [];
 
     private Dictionary<NodeConnection, NodeConnection> _edges = [];
 
@@ -17,7 +18,60 @@ public sealed class Graph
 
     // Nodes
 
-    // TODO
+    public int NodeCount => _nodes.Count;
+
+    public NodeId Add(NodeType type) => _nodes.Add(new(type));
+
+    public bool RemoveAt(NodeId id)
+    {
+        var node = _nodes.RemoveAt(id);
+        if (!node.HasValue)
+            return false;
+
+        byte slot;
+
+        for (slot = 0; slot < node.Value._impulses; slot++)
+            DisconnectDownstream(new(ConnectorType.Flow, id, slot));
+
+        for (slot = 0; slot < node.Value._inputs; slot++)
+            DisconnectDownstream(new(ConnectorType.Data, id, slot));
+
+        for (slot = 0; slot < node.Value._operations; slot++)
+            DisconnectAllUpstream(new(ConnectorType.Flow, id, slot));
+
+        for (slot = 0; slot < node.Value._outputs; slot++)
+            DisconnectAllUpstream(new(ConnectorType.Data, id, slot));
+
+        return true;
+    }
+
+    public Enumerator GetEnumerator() => new(_nodes.GetEnumerator());
+
+    IEnumerator<KeyValuePair<NodeId, Node>> IEnumerable<KeyValuePair<NodeId, Node>>.GetEnumerator() => GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public struct Enumerator : IEnumerator<KeyValuePair<NodeId, Node>>
+    {
+
+        private NodeSlotMap.Enumerator _inner;
+
+        internal Enumerator(NodeSlotMap.Enumerator inner)
+        {
+            _inner = inner;
+        }
+
+        public readonly KeyValuePair<NodeId, Node> Current => _inner.Current;
+
+        readonly object IEnumerator.Current => Current;
+
+        public readonly void Dispose() => _inner.Dispose();
+
+        public bool MoveNext() => _inner.MoveNext();
+
+        public void Reset() => _inner.Reset();
+
+    }
 
     // Connections
 
@@ -43,7 +97,7 @@ public sealed class Graph
         downs.Add(down);
     }
 
-    public bool Disconnect(NodeConnection down)
+    public bool DisconnectDownstream(NodeConnection down)
     {
         if (!_edges.Remove(down, out var up))
             return false;
@@ -55,7 +109,7 @@ public sealed class Graph
         return true;
     }
 
-    public bool DisconnectAll(NodeConnection up)
+    public bool DisconnectAllUpstream(NodeConnection up)
     {
         if (!_backEdges.Remove(up, out var downs))
             return false;
