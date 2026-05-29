@@ -1,6 +1,6 @@
-namespace ProtoFiber.Core.Attributes;
+namespace ProtoFiber.Core.Model;
 
-[AttributeUsage(AttributeTargets.Field)]
+[AttributeUsage(AttributeTargets.Property)]
 public sealed class InputAttribute : Attribute
 {
 

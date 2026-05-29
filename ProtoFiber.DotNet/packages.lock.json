@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net11.0": {
+      "protofiber.core": {
+        "type": "Project"
+      },
+      "protofiber.core.nodes": {
+        "type": "Project",
+        "dependencies": {
+          "ProtoFiber.Core": "[1.0.0, )"
+        }
+      }
+    }
+  }
+}

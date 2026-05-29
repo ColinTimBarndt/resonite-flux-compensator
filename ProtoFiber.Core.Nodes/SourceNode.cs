@@ -1,4 +1,4 @@
-using ProtoFiber.Core.Attributes;
+using ProtoFiber.Core.Model;
 
 namespace ProtoFiber.Core.Nodes;
 
@@ -6,6 +6,6 @@ public abstract class SourceNode<T> : EvaluatedNode
 {
 
     [Output]
-    public T Value;
+    protected static T? Value { get; }
 
 }

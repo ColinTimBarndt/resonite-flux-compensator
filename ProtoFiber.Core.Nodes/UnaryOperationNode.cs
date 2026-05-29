@@ -1,4 +1,4 @@
-using ProtoFiber.Core.Attributes;
+using ProtoFiber.Core.Model;
 
 namespace ProtoFiber.Core.Nodes;
 
@@ -6,9 +6,9 @@ public abstract class UnaryOperationNode<TArgument, TResult> : EvaluatedNode
 {
 
     [Input]
-    public static TArgument Argument;
+    protected static TArgument? Argument { get; }
 
     [Output]
-    public static TResult Result;
+    protected static TResult? Result { set; get; }
 
 }

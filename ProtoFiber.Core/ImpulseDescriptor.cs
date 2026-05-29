@@ -2,21 +2,25 @@ using System.Collections.Immutable;
 
 namespace ProtoFiber.Core;
 
-public readonly struct ImpulseDescriptor
+public readonly struct ImpulseDescriptor : IConnectorDescriptor
 {
 
-    private readonly ushort[]? _linkedOperations;
+    private readonly byte[]? _connections;
+
+    byte[]? IConnectorDescriptor.Connections => _connections;
 
     private readonly Flags _flags;
 
-    private ImpulseDescriptor(ushort[]? linkedOperations, Flags flags) : this()
+    private ImpulseDescriptor(
+        byte[]? linkedOperations,
+        Flags flags
+    ) : this()
     {
-        _linkedOperations = linkedOperations;
+        _connections = linkedOperations;
         _flags = flags;
     }
 
-    public bool IsConnectedTo(int operation) => IsConnectedTo((ushort)operation);
-    public bool IsConnectedTo(ushort operation) => _linkedOperations is null || _linkedOperations.Contains(operation);
+    public bool IsContinuation => _flags == default;
 
     public bool IsCall => _flags.HasFlag(Flags.Call);
 
@@ -32,19 +36,19 @@ public readonly struct ImpulseDescriptor
         Resumption = 4,
     }
 
-    internal static ImpulseDescriptor Continuation(ushort[]? linkedOperations)
+    internal static ImpulseDescriptor Continuation(byte[]? linkedOperations)
         => new(linkedOperations, default);
 
-    internal static ImpulseDescriptor Call(ushort[]? linkedOperations)
+    internal static ImpulseDescriptor Call(byte[]? linkedOperations)
         => new(linkedOperations, Flags.Call);
 
-    internal static ImpulseDescriptor AsyncCall(ushort[]? linkedOperations)
+    internal static ImpulseDescriptor AsyncCall(byte[]? linkedOperations)
         => new(linkedOperations, Flags.Call | Flags.Async);
 
-    internal static ImpulseDescriptor Resumption(ushort[]? linkedOperations)
+    internal static ImpulseDescriptor Resumption(byte[]? linkedOperations)
         => new(linkedOperations, Flags.Call | Flags.Resumption);
 
-    internal static ImpulseDescriptor AsyncResumption(ushort[]? linkedOperations)
+    internal static ImpulseDescriptor AsyncResumption(byte[]? linkedOperations)
         => new(linkedOperations, Flags.Call | Flags.Async | Flags.Resumption);
 
 

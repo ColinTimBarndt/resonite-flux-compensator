@@ -1,4 +1,4 @@
-namespace ProtoFiber.Core;
+namespace ProtoFiber.Core.Model;
 
 public interface ICall
 {

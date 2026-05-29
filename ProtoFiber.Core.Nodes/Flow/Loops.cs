@@ -1,4 +1,4 @@
-using ProtoFiber.Core.Attributes;
+using ProtoFiber.Core.Model;
 
 namespace ProtoFiber.Core.Nodes.Flow;
 
@@ -17,7 +17,7 @@ public abstract class WhileLoop : LoopNode
 {
 
     [Input]
-    public static bool Condition;
+    protected static bool Condition { get; }
 
 }
 
@@ -26,13 +26,13 @@ public abstract class ForLoop<T> : LoopNode
 {
 
     [Input]
-    public static T Count;
+    protected static T? Count { get; }
 
     [Input]
-    public static bool Reverse;
+    protected static bool Reverse { get; }
 
     [Output]
-    public static T Iteration;
+    protected static T? Iteration { set; get; }
 
 }
 
@@ -41,15 +41,15 @@ public abstract class RangeLoop<T> : LoopNode
 {
 
     [Input]
-    public static T Start;
+    protected static T? Start { get; }
 
     [Input]
-    public static T End;
+    protected static T? End { get; }
 
     [Input(Default = 1)]
-    public static T StepSize;
+    protected static T? StepSize { get; }
 
     [Output]
-    public static T Current;
+    protected static T? Current { set; get; }
 
 }

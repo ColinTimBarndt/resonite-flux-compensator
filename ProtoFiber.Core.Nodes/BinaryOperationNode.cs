@@ -1,4 +1,4 @@
-using ProtoFiber.Core.Attributes;
+using ProtoFiber.Core.Model;
 
 namespace ProtoFiber.Core.Nodes;
 
@@ -6,12 +6,12 @@ public abstract class BinaryOperationNode<TLeft, TRight, TResult> : EvaluatedNod
 {
 
     [Input]
-    public static TLeft Left;
+    protected static TLeft? Left { get; }
 
     [Input]
-    public static TRight Right;
+    protected static TRight? Right { get; }
 
     [Output]
-    public static TResult Result;
+    protected static TResult? Result { set; get; }
 
 }

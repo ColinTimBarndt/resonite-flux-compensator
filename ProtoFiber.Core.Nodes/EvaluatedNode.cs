@@ -1,4 +1,4 @@
-﻿using ProtoFiber.Core.Attributes;
+﻿using ProtoFiber.Core.Model;
 
 namespace ProtoFiber.Core.Nodes;
 

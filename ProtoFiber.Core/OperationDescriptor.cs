@@ -1,19 +1,21 @@
 namespace ProtoFiber.Core;
 
-public readonly struct OperationDescriptor
+public readonly struct OperationDescriptor : IConnectorDescriptor
 {
 
-    private readonly ushort[]? _linkedOperations;
+    private readonly byte[]? _connections;
+
+    byte[]? IConnectorDescriptor.Connections => _connections;
 
     public readonly bool IsAsync { get; }
 
-    internal OperationDescriptor(ushort[]? linkedOperations, bool isAsync)
+    internal OperationDescriptor(
+        byte[]? linkedOperations,
+        bool isAsync
+    )
     {
-        _linkedOperations = linkedOperations;
+        _connections = linkedOperations;
         IsAsync = isAsync;
     }
-
-    public bool IsReachableFrom(int impulse) => IsReachableFrom((ushort)impulse);
-    public bool IsReachableFrom(ushort impulse) => _linkedOperations is null || _linkedOperations.Contains(impulse);
 
 }

@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace ProtoFiber.Core;
+namespace ProtoFiber.Core.Model;
 
 public interface IContinuation
 {
