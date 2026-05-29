@@ -24,3 +24,7 @@ Compiling ProtoFlux to static IL can massively increase performance because it..
 - keeps locals and stores on the stack: Cache locality is a big factor in improving performance
 
 Benchmarks will be needed to empirically compare the performance to interpreted ProtoFlux.
+
+## Naming Scheme
+
+<img title="Naming Scheme" src="media/NamingScheme.svg" width="1000" />
